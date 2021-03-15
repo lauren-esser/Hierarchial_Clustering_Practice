@@ -10,7 +10,7 @@ from sklearn import preprocessing
 from scipy.stats import norm
 
 
-
+#make two pathways in enrich -> build_cdfs (historical) or apply_cdfs(new_data)
 
 Class Enrich(Common):
     """
@@ -18,12 +18,16 @@ Class Enrich(Common):
             Enriched data will be stored in the ./cache directory.
     """
 
-    #is init only used when adding new information? ex adding name =. Why do we need it for this?
     def __init__(self):
         pass
     
     def test_import(self):
         print(f'Package {__name__} imported. {self.__doc__}')
+
+    def build_cdfs(self):
+        #take cdf element and write it to a name file, for every item that's numeric. 
+        # I'll call the cdf funciton within this function multiple times. 
+        #see if I can loop over all numeric column names and write to file using column name. (look at pandas)
 
     def preprocess(self, df: pd.DataFrame:)
         #set id to index
@@ -33,6 +37,10 @@ Class Enrich(Common):
         print(df.info())
         print(df.describe())
         print(df.isna().sum())
+
+        #loop over all numeric fields again. For each num field I will retrieve the saved cdf and call it for each 
+        # individual member record. Append the return valued to the original dataframe.
+        #will have original num cols and the cdf cols ( would have age and age norms)
         return df
         
     def normalize_numerical(self, df: pd.DataFrame)
@@ -45,6 +53,7 @@ Class Enrich(Common):
                                         columns = num_cols.columns)
         return num_cols_scaled
     
+    #method that loops over all the members
     def Inverse_AER(member1, member2, df: pd.DataFrame):
         """
         Takes in vector of Member1 and Member2 and returns the Inverse Absolute Error Rate
@@ -69,6 +78,8 @@ Class Enrich(Common):
 
         Return Inverse_Error_Rate
 
+    
+    # for each numeric field I should call the cdf function and write it to a file with the name of the object. 
     def cdf(element_vector):
         """
         Takes in vector of all numeric values within the data set for the element being evaluated and returns 
@@ -77,6 +88,10 @@ Class Enrich(Common):
         output_cdf = norm.cdf(element_vector)
         return output_cdf
 
+# OHE all the categorical data method
+
+# For binary data - Convert to the likelihood (percentage). If 40% true then every record should have .4.  Build likelihoods function (could do hashmaps)
+# two column df with name of col as col1 and rate or likelikhood as col2.
 
 if __name__ == '__main__':
     """
