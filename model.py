@@ -25,6 +25,7 @@ class Model(Common):
         print('Singular Values: ', pca.singular_values_)
         pca_df = pd.DataFrame(pca_comp, columns = ['PCA1','PCA2', 'PCA3', 'PCA4'])
 
+        ### any visuals we will want to save to a file. 
 
         #PCA visuals -> comparing pca 1 and 2
         fig = plt.figure(figsize = (12, 8))
@@ -55,30 +56,31 @@ class Model(Common):
         return pca_df.head(), pca_comp
 
 
-def hierarchial_clustering(pca_comp, n_clusters):
-    cluster = AgglomerativeClustering(n_clusters = n_clusters, 
-                                 affinity = 'euclidean',
-                                 linkage = 'ward')
-    cluster.fit(pca_comp)
-    labels = cluster.labels_
+#save cluster as a file and then read back in for new_data
+    def hierarchial_clustering(pca_comp, n_clusters):
+        cluster = AgglomerativeClustering(n_clusters = n_clusters, 
+                                    affinity = 'euclidean',
+                                    linkage = 'ward')
+        cluster.fit(pca_comp)
+        labels = cluster.labels_
 
-    #visualize clusters
-    plt.figure(figsize = (12,8))
-    plt.scatter(pca_comp[:,0], pca_comp[:,1], c=cluster.labels_, cmap = 'prism')
-    plt.title('Clusters', fontsize = 20)
-    plt.xlabel('PC1', fontsize = 18)
-    plt.ylabel('PC2', fontsize = 18);
+        #visualize clusters
+        plt.figure(figsize = (12,8))
+        plt.scatter(pca_comp[:,0], pca_comp[:,1], c=cluster.labels_, cmap = 'prism')
+        plt.title('Clusters', fontsize = 20)
+        plt.xlabel('PC1', fontsize = 18)
+        plt.ylabel('PC2', fontsize = 18);
 
-def new_data(new_df):
-    #normalize new data in the same way
-    x = new_df
-    Standard_scaler = preprocessing.StandardScaler()
-    x_scaled = Standard_scaler.fit_transform(x)
-    new_scaled = pd.DataFrame(x_scaled, index = new_df.index, 
-                                columns = new_df.columns)
-    new_scaled.head()
+    def new_data(new_df):
+        #normalize new data in the same way
+        x = new_df
+        Standard_scaler = preprocessing.StandardScaler()
+        x_scaled = Standard_scaler.fit_transform(x)
+        new_scaled = pd.DataFrame(x_scaled, index = new_df.index, 
+                                    columns = new_df.columns)
+        new_scaled.head()
 
-    #assign to cluster from hierarchial clustering model
-    model = cluster.fit(pca_comp)
-    assigned_cluster = model.fit_predict(new_scaled)
-    return assigned_cluster
+        #assign to cluster from hierarchial clustering model
+        model = cluster.fit(pca_comp)
+        assigned_cluster = model.fit_predict(new_scaled)
+        return assigned_cluster

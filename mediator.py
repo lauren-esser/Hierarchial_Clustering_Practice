@@ -53,18 +53,33 @@ if __name__ == '__main__':
     # Mediator.test_db_connect()
     # ----------------------------- #
 
-    # Demo logistic regression
+    # Demo hierarchial clustering
     # Import demo bank data
-    df = di().import_demo_data('./Documents/github/Hierarchial_Clustering_Practice/Iris.csv')
+    df = di().import_demo_data('./Users/laurenesser/Documents/github/Hierarchial_Clustering_Practice/Iris.csv')
     print(df.head())
+
+    # new data true or false
+
 
     # Enrich demo data
     enrich = en()
+    if historical: en.build_cdfs --
+
     cleanDf = enrich.preprocess(df)
     num_cols_scaled = enrich.normalize_numerical(cleanDf)
 
 
     # Pass to Model layer for recursive feature elimination
     model = mod()
+    if historical: en.build_cdfs --
     pca_df, pca_comp= model.pca(num_cols_scaled)
     model.hierarchial_clustering(pca_comp, 4)
+
+    #historical - store cluster obj or 
+    # new data: we use same consistent model
+    # for new data we will want to use existing cdfs
+
+
+    #measures of performance for clustering for measure.py
+    #mediator is the only thing that will have input and output will come from here)
+    # files - store clustering, cdfs (enrich), boolean likelihoods (enrich)
